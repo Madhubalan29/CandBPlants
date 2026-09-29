@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C and B Potted Plants | Premium Indoor & Outdoor Plants</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-green': { 50: '#f0fdf4', 100: '#dcfce7', 500: '#22c55e', 700: '#15803d', 800: '#166534', 900: '#14532d' },
+                        'earth': { 100: '#f5f5f4', 800: '#292524', 900: '#1c1917' }
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Playfair Display', 'serif'] }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f5f5f4; }
+        ::-webkit-scrollbar-thumb { background: #15803d; border-radius: 4px; }
+        
+        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background-color: #14532d; color: white; padding: 12px 24px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transform: translateX(120%); transition: transform 0.3s ease-in-out; display: flex; align-items: center; gap: 10px; }
+        .toast.show { transform: translateX(0); }
+        
+        .filter-checkbox { accent-color: #15803d; width: 1.1rem; height: 1.1rem; cursor: pointer; }
+        
+        .range-slider { position: relative; width: 100%; height: 5px; background: #e5e7eb; border-radius: 5px; margin-top: 15px; margin-bottom: 20px; }
+        .range-slider .progress { position: absolute; height: 100%; left: 0%; right: 0%; background: #15803d; border-radius: 5px; }
+        .range-slider input[type="range"] { position: absolute; width: 100%; height: 5px; -webkit-appearance: none; appearance: none; background: none; pointer-events: none; outline: none; }
+        .range-slider input[type="range"]::-webkit-slider-thumb { height: 16px; width: 16px; border-radius: 50%; background: #15803d; pointer-events: auto; -webkit-appearance: none; box-shadow: 0 0 6px rgba(0,0,0,0.2); cursor: pointer; }
+        .range-slider input[type="range"]::-moz-range-thumb { height: 16px; width: 16px; border-radius: 50%; background: #15803d; pointer-events: auto; -moz-appearance: none; box-shadow: 0 0 6px rgba(0,0,0,0.2); cursor: pointer; border: none; }
+    </style>
+</head>
+<body class="bg-earth-100 text-earth-800 font-sans antialiased flex flex-col min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20">
+                <div class="flex items-center">
+                    <a href="#" onclick="navigate('home'); return false;" class="flex-shrink-0 flex items-center gap-3">
+                        <img src="logo_2.jpeg" alt="C&B Logo" class="h-12 w-12 object-contain rounded-md" onerror="this.src='https://placehold.co/48x48/15803d/ffffff?text=CB'">
+                        <span class="font-serif font-bold text-2xl text-brand-green-900 tracking-tight">C&B</span>
+                    </a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8 relative">
+                    <a href="#" onclick="navigate('home'); return false;" class="text-earth-800 hover:text-brand-green-700 font-medium transition-colors">Home</a>
+                    
+                    <div class="relative group">
+                        <button onclick="navigate('shop-hub')" class="text-earth-800 hover:text-brand-green-700 font-medium transition-colors flex items-center gap-1 py-6">
+                            Shop <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                        </button>
+                        <div class="absolute hidden group-hover:block w-56 bg-white shadow-xl rounded-xl mt-0 py-2 border border-gray-100 z-50 overflow-hidden">
+                            <a href="#" onclick="navigate('shop', 'Plants'); return false;" class="block px-5 py-3 text-sm font-bold text-brand-green-900 hover:bg-brand-green-50 border-b border-gray-50"><i class="fa-solid fa-leaf mr-2 text-brand-green-500"></i> Potted Plants</a>
+                            <a href="#" onclick="navigate('shop', 'Pots'); return false;" class="block px-5 py-3 text-sm text-gray-700 hover:bg-brand-green-50 hover:text-brand-green-700">Designer Pots</a>
+                            <a href="#" onclick="navigate('shop', 'Fertilizers'); return false;" class="block px-5 py-3 text-sm text-gray-700 hover:bg-brand-green-50 hover:text-brand-green-700">Fertilizers & Soil</a>
+                            <a href="#" onclick="navigate('shop', 'Seeds'); return false;" class="block px-5 py-3 text-sm text-gray-700 hover:bg-brand-green-50 hover:text-brand-green-700">Seeds</a>
+                            <a href="#" onclick="navigate('shop', 'Accessories'); return false;" class="block px-5 py-3 text-sm text-gray-700 hover:bg-brand-green-50 hover:text-brand-green-700">Accessories</a>
+                        </div>
+                    </div>
+
+                    <a href="#" onclick="navigate('blog'); return false;" class="text-earth-800 hover:text-brand-green-700 font-medium transition-colors">Blog</a>
+                    <a href="#" onclick="navigate('home'); setTimeout(() => document.getElementById('about').scrollIntoView(), 100); return false;" class="text-earth-800 hover:text-brand-green-700 font-medium transition-colors">About</a>
+                </div>
+
+                <div class="hidden md:flex items-center gap-4">
+                    <button onclick="toggleCart()" class="relative text-earth-800 hover:text-brand-green-700 transition-colors p-2">
+                        <i class="fa-solid fa-cart-shopping text-xl"></i>
+                        <span id="cart-badge" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-brand-green-700 rounded-full">0</span>
+                    </button>
+                </div>
+
+                <div class="flex items-center md:hidden gap-4">
+                    <button onclick="toggleCart()" class="relative text-earth-800 p-2">
+                        <i class="fa-solid fa-cart-shopping text-xl"></i>
+                        <span id="mobile-cart-badge" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-brand-green-700 rounded-full">0</span>
+                    </button>
+                    <button id="mobile-menu-btn" class="text-earth-800 focus:outline-none p-2"><i class="fa-solid fa-bars text-2xl"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-earth-100">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 shadow-lg">
+                <a href="#" onclick="navigate('home'); return false;" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-brand-green-50">Home</a>
+                <div class="border-y border-gray-100 my-2 py-2">
+                    <span class="block px-3 py-1 text-xs font-bold text-gray-400 uppercase tracking-wider">Shop Catalog</span>
+                    <a href="#" onclick="navigate('shop', 'Plants'); return false;" class="block px-5 py-2 rounded-md text-base font-bold text-brand-green-700 hover:bg-brand-green-50">Plants</a>
+                    <a href="#" onclick="navigate('shop', 'Pots'); return false;" class="block px-5 py-2 rounded-md text-base font-medium text-gray-600 hover:bg-brand-green-50">Pots</a>
+                    <a href="#" onclick="navigate('shop', 'Fertilizers'); return false;" class="block px-5 py-2 rounded-md text-base font-medium text-gray-600 hover:bg-brand-green-50">Fertilizers</a>
+                    <a href="#" onclick="navigate('shop', 'Seeds'); return false;" class="block px-5 py-2 rounded-md text-base font-medium text-gray-600 hover:bg-brand-green-50">Seeds</a>
+                </div>
+                <a href="#" onclick="navigate('blog'); return false;" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-brand-green-50">Blog</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-1">
+        
+        <!-- ================= VIEW: HOME ================= -->
+        <div id="view-home">
+            <header class="relative bg-brand-green-900 overflow-hidden">
+                <div class="absolute inset-0">
+                    <img src="SAVE_20260815_141827.jpg" alt="Beautiful lush potted plants" class="w-full h-full object-cover opacity-40" onerror="this.src='https://images.unsplash.com/photo-1466692476877-361ad3152516?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'">
+                </div>
+                <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 lg:py-48 flex flex-col items-center text-center">
+                    <span class="text-brand-green-100 font-semibold tracking-wider uppercase mb-4 text-sm md:text-base shadow-sm">Welcome to C & B Potted Plants</span>
+                    <h1 class="text-4xl md:text-6xl font-serif font-bold text-white mb-6 leading-tight max-w-4xl">Breathe Life Into Your Space with Nature's Finest</h1>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button onclick="navigate('shop', 'Plants')" class="bg-brand-green-500 hover:bg-brand-green-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all transform hover:-translate-y-1">Shop Plants</button>
+                    </div>
+                </div>
+            </header>
+
+            <section class="py-20 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-12">
+                        <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-green-900 mb-4">Our Best Selling Plants</h2>
+                        <p class="text-gray-600 max-w-2xl mx-auto">The most loved indoor and outdoor greenery by our community.</p>
+                    </div>
+                    <div id="bestsellers-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div>
+                </div>
+            </section>
+
+            <section id="about" class="py-20 bg-brand-green-50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center gap-16">
+                    <div class="w-full lg:w-1/2">
+                        <div class="relative rounded-3xl overflow-hidden shadow-2xl">
+                            <img src="https://images.unsplash.com/photo-1598539958784-07dcc26da896?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Hands caring for a plant" class="w-full h-auto object-cover">
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-1/2">
+                        <h4 class="text-brand-green-700 font-semibold tracking-wider uppercase mb-2">Our Story</h4>
+                        <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-green-900 mb-6">Rooted in Passion for Nature</h2>
+                        <p class="text-gray-700 mb-6 leading-relaxed text-lg">At <strong class="text-brand-green-800">C and B Potted Plants</strong>, our main focus is helping you build your indoor jungle. While we procure the best pots and fertilizers to support your journey, our true passion is nurturing and providing the finest potted plants for your home.</p>
+                        <div class="grid grid-cols-2 gap-6 mt-8">
+                            <div><h5 class="font-bold text-2xl text-brand-green-700 mb-1">100+</h5><p class="text-gray-600 text-sm font-medium">Plant Varieties</p></div>
+                            <div><h5 class="font-bold text-2xl text-brand-green-700 mb-1">Expert</h5><p class="text-gray-600 text-sm font-medium">Care Advice</p></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ================= VIEW: SHOP HUB (Categories Landing Page) ================= -->
+        <div id="view-shop-hub" class="hidden pb-20 bg-earth-100">
+            <header class="bg-brand-green-50 py-12 border-b border-brand-green-100 text-center">
+                <h1 class="text-4xl font-serif font-bold text-brand-green-900 mb-4">Our Collections</h1>
+                <p class="text-gray-600 max-w-2xl mx-auto">Explore our premium plants and hand-selected gardening accessories.</p>
+            </header>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                
+                <div class="relative bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-all mb-8 cursor-pointer group" onclick="navigate('shop', 'Plants')">
+                    <img src="SAVE_20260815_141827.jpg" class="w-full h-80 md:h-[400px] object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://images.unsplash.com/photo-1466692476877-361ad3152516?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-8 md:p-12">
+                        <span class="text-brand-green-500 font-bold tracking-widest uppercase text-sm mb-2">Our Specialty</span>
+                        <h2 class="text-4xl md:text-5xl font-serif font-bold text-white mb-4">Potted Plants</h2>
+                        <p class="text-brand-green-50 mb-6 max-w-2xl text-lg">Discover our core collection of beautiful, resilient indoor and outdoor plants. Hand-nurtured and ready for your space.</p>
+                        <button class="bg-brand-green-500 text-white font-bold py-3 px-8 rounded-full w-max shadow-lg">Shop All Plants <i class="fa-solid fa-arrow-right ml-2"></i></button>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-serif font-bold text-earth-900 mb-6 mt-12">Plant Care & Accessories</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer group" onclick="navigate('shop', 'Pots')">
+                        <img src="https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=600&q=80" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="p-5 text-center"><h4 class="font-bold text-earth-900 text-lg">Designer Pots</h4></div>
+                    </div>
+                    <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer group" onclick="navigate('shop', 'Fertilizers')">
+                        <img src="https://images.unsplash.com/photo-1622383563227-04401ab4e5ea?auto=format&fit=crop&w=600&q=80" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="p-5 text-center"><h4 class="font-bold text-earth-900 text-lg">Fertilizers & Soil</h4></div>
+                    </div>
+                    <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer group" onclick="navigate('shop', 'Seeds')">
+                        <img src="https://images.unsplash.com/photo-1588667527653-cb30b4ec74f4?auto=format&fit=crop&w=600&q=80" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="p-5 text-center"><h4 class="font-bold text-earth-900 text-lg">Seeds</h4></div>
+                    </div>
+                    <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer group" onclick="navigate('shop', 'Accessories')">
+                        <img src="https://images.unsplash.com/photo-1416879598553-33bc0fbaaf73?auto=format&fit=crop&w=600&q=80" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="p-5 text-center"><h4 class="font-bold text-earth-900 text-lg">Accessories</h4></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= VIEW: SHOP CATEGORY CATALOG ================= -->
+        <div id="view-shop" class="hidden pb-20 bg-earth-100">
+            <header class="bg-brand-green-50 py-12 border-b border-brand-green-100 text-center">
+                <h1 class="text-4xl font-serif font-bold text-brand-green-900 mb-4" id="shop-page-title">Shop</h1>
+            </header>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row gap-8">
+                <aside class="w-full md:w-72 shrink-0">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 md:sticky top-24 h-max overflow-y-auto max-h-[85vh]">
+                        <div class="flex justify-between items-center mb-6 border-b pb-4">
+                            <h3 class="text-lg font-bold text-earth-900">Filters</h3>
+                            <button onclick="clearFilters()" class="text-xs font-bold text-brand-green-700 hover:underline">Clear All</button>
+                        </div>
+
+                        <div class="mb-6 border-b pb-6">
+                            <h4 class="text-sm font-bold text-earth-900 uppercase tracking-wider mb-4">Price Range</h4>
+                            <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
+                                <span>₹<span id="price-min-display">0</span></span>
+                                <span>₹<span id="price-max-display">5000</span></span>
+                            </div>
+                            <div class="range-slider">
+                                <div class="progress" id="slider-progress"></div>
+                                <input type="range" class="range-min" id="price-min" min="0" max="5000" value="0" step="50" oninput="updatePriceSlider()">
+                                <input type="range" class="range-max" id="price-max" min="0" max="5000" value="5000" step="50" oninput="updatePriceSlider()">
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-6" id="filter-container"></div>
+                    </div>
+                </aside>
+
+                <div class="flex-1">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                        <p class="text-gray-500 text-sm font-medium"><span id="result-count">0</span> products found</p>
+                        <select id="sort-select" onchange="applyFilters()" class="bg-white border border-gray-200 text-gray-700 py-2 px-4 rounded-lg text-sm focus:outline-none cursor-pointer shadow-sm w-full sm:w-auto">
+                            <option value="relevant">Most Relevant</option>
+                            <option value="bestseller">Best Seller</option>
+                            <option value="new">New In</option>
+                            <option value="price-low-high">Increasing Price</option>
+                            <option value="price-high-low">Decreasing Price</option>
+                        </select>
+                    </div>
+                    
+                    <div id="shop-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                    
+                    <div id="empty-state" class="hidden text-center py-20 bg-white rounded-2xl shadow-sm border border-gray-100">
+                        <i class="fa-solid fa-leaf text-5xl text-gray-300 mb-4"></i>
+                        <h3 class="text-xl font-bold text-gray-600">No products match your filters</h3>
+                        <p class="text-gray-500 mt-2">Try adjusting the price range or clearing some checkboxes.</p>
+                        <button onclick="clearFilters()" class="mt-6 bg-brand-green-100 text-brand-green-800 font-semibold py-2 px-6 rounded-lg hover:bg-brand-green-200 transition">Clear Filters</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= VIEW: PRODUCT DETAIL ================= -->
+        <div id="view-product" class="hidden py-12 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" id="product-detail-container"></div>
+        </div>
+
+        <!-- ================= VIEW: BLOG ================= -->
+        <div id="view-blog" class="hidden pb-20 bg-white">
+            <header class="bg-brand-green-900 py-16 text-center text-white">
+                <h1 class="text-4xl md:text-5xl font-serif font-bold mb-4">Plantique Blog</h1>
+                <p class="text-brand-green-100 max-w-2xl mx-auto">Tips, guides, and inspiration for nurturing your indoor jungle.</p>
+            </header>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <article class="bg-earth-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer">
+                        <img src="https://images.unsplash.com/photo-1614594975525-e45190c55d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Watering tips" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <span class="text-xs font-bold text-brand-green-700 uppercase">Plant Care</span>
+                            <h3 class="text-xl font-bold text-earth-900 my-2">How Often Should You Really Water Succulents?</h3>
+                            <p class="text-gray-600 text-sm line-clamp-3">The number one reason succulents die indoors is overwatering. Learn the 'soak and dry' method to keep your fleshy friends thriving.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-brand-green-900 text-brand-green-50 mt-auto py-16">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8 border-b border-brand-green-800 pb-12">
+            <div class="md:col-span-1">
+                <a href="#" class="flex items-center gap-3 mb-4">
+                    <img src="logo_2.jpeg" alt="C&B Logo" class="h-10 w-10 object-contain rounded bg-white p-1" onerror="this.src='https://placehold.co/40x40/15803d/ffffff?text=CB'">
+                    <span class="font-serif font-bold text-2xl text-white">C&B Plants</span>
+                </a>
+                <p class="text-sm text-brand-green-100/80">Bringing nature's beauty into your everyday life. Premium potted plants and accessories delivered with care.</p>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold text-white mb-4">Shop Categories</h3>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" onclick="navigate('shop', 'Plants'); return false;" class="hover:text-white transition-colors">Indoor & Outdoor Plants</a></li>
+                    <li><a href="#" onclick="navigate('shop', 'Pots'); return false;" class="hover:text-white transition-colors">Designer Pots</a></li>
+                    <li><a href="#" onclick="navigate('shop', 'Fertilizers'); return false;" class="hover:text-white transition-colors">Fertilizers & Soil</a></li>
+                    <li><a href="#" onclick="navigate('shop', 'Seeds'); return false;" class="hover:text-white transition-colors">Seeds</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold text-white mb-4">Company</h3>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" onclick="navigate('home'); setTimeout(()=>document.getElementById('about').scrollIntoView(), 100); return false;" class="hover:text-white transition-colors">About Us</a></li>
+                    <li><a href="#" onclick="navigate('blog'); return false;" class="hover:text-white transition-colors">Blog</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold text-white mb-4">Contact Us</h3>
+                <ul class="space-y-2 text-sm mb-4">
+                    <li><i class="fa-solid fa-phone mr-2"></i> +91 93423 70441</li>
+                    <li><i class="fa-solid fa-envelope mr-2"></i> hello@candbplants.com</li>
+                </ul>
+                <div class="flex gap-4">
+                    <a href="https://www.instagram.com/c_and_b_potted_plants?stkn=M2I4eTU3NXBxYXNh" target="_blank" class="w-10 h-10 rounded-full bg-brand-green-800 flex items-center justify-center hover:bg-brand-green-500 text-white transition"><i class="fa-brands fa-instagram text-lg"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=61592511296587" target="_blank" class="w-10 h-10 rounded-full bg-brand-green-800 flex items-center justify-center hover:bg-blue-600 text-white transition"><i class="fa-brands fa-facebook-f text-lg"></i></a>
+                    <a href="https://wa.me/919342370441" target="_blank" class="w-10 h-10 rounded-full bg-brand-green-800 flex items-center justify-center hover:bg-green-500 text-white transition"><i class="fa-brands fa-whatsapp text-lg"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="pt-8 text-center text-sm text-brand-green-100/60">
+            <p>&copy; 2026 C and B Potted Plants. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Shopping Cart Drawer -->
+    <div id="cart-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden transition-opacity opacity-0" onclick="toggleCart()"></div>
+    <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white shadow-2xl z-[70] transform translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="p-6 border-b flex justify-between items-center bg-brand-green-50">
+            <h2 class="text-2xl font-serif font-bold text-brand-green-900">Your Cart</h2>
+            <button onclick="toggleCart()" class="text-gray-500 hover:text-brand-green-700 text-xl"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
+        <div class="p-6 border-t bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-gray-600 font-medium">Subtotal</span>
+                <span id="cart-total" class="text-xl font-bold text-brand-green-900">₹0</span>
+            </div>
+            <button onclick="checkout()" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 rounded-xl shadow-lg transition-all flex justify-center gap-2 items-center text-lg">
+                <i class="fa-brands fa-whatsapp text-xl"></i> Order via WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        const products = [
+            {
+                id: 1, name: "Ginseng Ficus Bonsai", scientificName: "Ficus microcarpa", currentPrice: 999.00, originalPrice: 1599.00, bestSeller: true, views: 540, orders: 120, stock: 15, dateAdded: '2026-08-01',
+                category: "Plants", family: "Ficus", size: "Up to 50 cm", difficulty: "Easy", light: "Plenty of light to half shade",
+                tags: ["Bonsai", "Indoor", "Tabletop"],
+                description: "A beautiful bonsai-style plant with glossy green leaves and a distinctive thick, exposed root system.",
+                images: ["ginseng-ficus-1.jpg", "ginseng-ficus-2.jpg", "ginseng-ficus-3.jpg", "ginseng-ficus-4.jpg", "ginseng-ficus-5.jpg"],
+                reviews: []
+            },
+            {
+                id: 2, name: "Echeveria Succulent Plant", scientificName: "Echeveria", currentPrice: 349.00, originalPrice: 399.00, bestSeller: true, views: 430, orders: 85, stock: 0, dateAdded: '2026-08-10',
+                category: "Plants", family: "Other", size: "Cutting", difficulty: "Intermediate", light: "Plenty of light to shade",
+                tags: ["Succulent", "Low-Maintenance", "Tabletop"],
+                description: "A beautiful rosette-forming succulent with fleshy, pastel blue-green leaves arranged in a compact spiral.",
+                images: ["echeveria-1.jpg", "echeveria-2.jpg", "echeveria-3.jpg", "echeveria-4.jpg"],
+                reviews: []
+            },
+            {
+                id: 3, name: "Tree of a Thousand Stars", scientificName: "Serissa japonica", currentPrice: 349.00, originalPrice: 399.00, bestSeller: false, views: 210, orders: 40, stock: 25, dateAdded: '2026-08-12',
+                category: "Plants", family: "Other", size: "Up to 50 cm", difficulty: "Intermediate", light: "Plenty of light but no direct sunlight",
+                tags: ["Bonsai", "Tabletop", "Ornamental"],
+                description: "A compact bonsai-style ornamental plant with tiny, dense green leaves and fine branching.",
+                images: ["serissa-1.jpg", "serissa-2.jpg", "serissa-3.jpg", "serissa-4.jpg"],
+                reviews: []
+            },
+            {
+                id: 4, name: "Golden Syngonium Plant", scientificName: "Syngonium podophyllum", currentPrice: 349.00, originalPrice: 399.00, bestSeller: true, views: 600, orders: 150, stock: 41, dateAdded: '2026-07-20',
+                category: "Plants", family: "Syngonium", size: "Up to 50 cm", difficulty: "Easy", light: "Plenty of light but no direct sunlight",
+                tags: ["Tropical", "Indoor", "Air-Purifying"],
+                description: "A tropical indoor plant with attractive arrow-shaped leaves in bright golden-green shades.",
+                images: ["golden-syngonium-1.jpg", "golden-syngonium-2.jpg", "golden-syngonium-3.jpg", "golden-syngonium-4.jpg"],
+                reviews: [{ user: "Suresh P.", rating: 5, comment: "Vibrant yellow-green leaves. Growing so fast!" }]
+            },
+            {
+                id: 5, name: "Variegated Ming Aralia", scientificName: "Polyscias fruticosa", currentPrice: 349.00, originalPrice: 399.00, bestSeller: false, views: 180, orders: 30, stock: 18, dateAdded: '2026-08-15',
+                category: "Plants", family: "Other", size: "Up to 50 cm", difficulty: "Intermediate", light: "Plenty of light to shade",
+                tags: ["Ornamental", "Tabletop", "Indoor"],
+                description: "A compact ornamental plant with finely textured, variegated green-and-cream foliage.",
+                images: ["variegated-ming-aralia-1.jpg", "variegated-ming-aralia-2.jpg", "variegated-ming-aralia-3.jpg", "variegated-ming-aralia-4.jpg"],
+                reviews: []
+            },
+            {
+                id: 6, name: "Aralia (Ming Aralia)", scientificName: "Ming Aralia", currentPrice: 349.00, originalPrice: 399.00, bestSeller: false, views: 160, orders: 25, stock: 20, dateAdded: '2026-08-16',
+                category: "Plants", family: "Other", size: "Up to 50 cm", difficulty: "Intermediate", light: "Plenty of light to shade",
+                tags: ["Ornamental", "Indoor"],
+                description: "A bushy ornamental plant with finely divided, attractive green foliage.",
+                images: ["ming-aralia-1.jpg", "ming-aralia-2.jpg", "ming-aralia-3.jpg", "ming-aralia-4.jpg"],
+                reviews: []
+            },
+            {
+                id: 7, name: "Syngonium", scientificName: "Syngonium podophyllum", currentPrice: 349.00, originalPrice: 399.00, bestSeller: false, views: 320, orders: 70, stock: 30, dateAdded: '2026-08-17',
+                category: "Plants", family: "Syngonium", size: "Up to 50 cm", difficulty: "Easy", light: "Plenty of light to half shade",
+                tags: ["Tropical", "Indoor", "Air-Purifying"],
+                description: "Syngonium is a popular tropical indoor plant known for its attractive arrow-shaped leaves.",
+                images: ["syngonium-1.jpg", "syngonium-2.jpg", "syngonium-3.jpg", "syngonium-4.jpg"],
+                reviews: []
+            },
+            {
+                id: 8, name: "Jade Bonsai", scientificName: "Crassula ovata", currentPrice: 349.00, originalPrice: 399.00, bestSeller: true, views: 510, orders: 110, stock: 40, dateAdded: '2026-08-05',
+                category: "Plants", family: "Other", size: "Up to 50 cm", difficulty: "Easy", light: "Plenty of light to half shade",
+                tags: ["Succulent", "Bonsai", "Low-Maintenance"],
+                description: "A popular succulent with thick, fleshy, oval-shaped glossy green leaves and sturdy woody stems.",
+                images: ["jade-bonsai-1.jpg", "jade-bonsai-2.jpg", "jade-bonsai-3.jpg", "jade-bonsai-4.jpg"],
+                reviews: [{ user: "Meera W.", rating: 5, comment: "Sturdy and beautiful. Highly recommend." }]
+            },
+            {
+                id: 9, name: "Dwarf Jade Plant", scientificName: "Portulacaria afra", currentPrice: 349.00, originalPrice: 399.00, bestSeller: false, views: 280, orders: 60, stock: 35, dateAdded: '2026-08-06',
+                category: "Plants", family: "Other", size: "Up to 50 cm", difficulty: "Easy", light: "Plenty of light to half shade",
+                tags: ["Succulent", "Bonsai", "Tabletop"],
+                description: "A compact succulent with small, round, glossy green leaves and reddish-brown stems.",
+                images: ["dwarf-jade-1.jpg", "dwarf-jade-2.jpg", "dwarf-jade-3.jpg", "dwarf-jade-4.jpg"],
+                reviews: []
+            },
+            {
+                id: 10, name: "Polka Dot Plant", scientificName: "Hypoestes phyllostachya", currentPrice: 349.00, originalPrice: 399.00, bestSeller: false, views: 390, orders: 75, stock: 22, dateAdded: '2026-08-07',
+                category: "Plants", family: "Other", size: "Up to 50 cm", difficulty: "Easy", light: "Plenty of light but no direct sunlight",
+                tags: ["Ornamental", "Indoor", "Tropical"],
+                description: "A colorful ornamental foliage plant with green leaves covered in contrasting spots and splashes.",
+                images: ["polka-dot-1.jpg", "polka-dot-2.jpg", "polka-dot-3.jpg", "polka-dot-4.jpg"],
+                reviews: [{ user: "Anil B.", rating: 4, comment: "Love the pink spots!" }]
+            },
+            {
+                id: 11, name: "Peperomia", scientificName: "Peperomia obtusifolia", currentPrice: 349.00, originalPrice: 399.00, bestSeller: false, views: 420, orders: 90, stock: 28, dateAdded: '2026-08-08',
+                category: "Plants", family: "Other", size: "Up to 50 cm", difficulty: "Easy", light: "Plenty of light to shade",
+                tags: ["Tropical", "Indoor", "Low-Maintenance"],
+                description: "Baby Rubber Plant (Peperomia obtusifolia) is a compact indoor plant with thick, glossy green leaves.",
+                images: ["peperomia-1.jpg", "peperomia-2.jpg", "peperomia-3.jpg", "peperomia-4.jpg"],
+                reviews: []
+            },
+            {
+                id: 12, name: "Monstera Deliciosa", scientificName: "Monstera deliciosa", currentPrice: 1299.00, originalPrice: 1499.00, bestSeller: false, views: 800, orders: 50, stock: 12, dateAdded: '2026-09-01',
+                category: "Plants", family: "Monstera", size: "50 cm to 100 cm", difficulty: "Easy", light: "Plenty of light but no direct sunlight",
+                tags: ["Tropical", "Indoor", "Air-Purifying"],
+                description: "Famous for its natural leaf holes, this tropical plant adds a bold jungle vibe to any room.",
+                images: ["https://images.unsplash.com/photo-1614594975525-e45190c55d0b?auto=format&fit=crop&w=600&q=80"],
+                reviews: []
+            },
+            {
+                id: 13, name: "Philodendron Birkin", scientificName: "Philodendron", currentPrice: 599.00, originalPrice: 799.00, bestSeller: false, views: 320, orders: 40, stock: 8, dateAdded: '2026-09-10',
+                category: "Plants", family: "Philodendron", size: "Up to 50 cm", difficulty: "Intermediate", light: "Plenty of light to half shade",
+                tags: ["Tropical", "Indoor"],
+                description: "A stunning compact plant with dark green leaves featuring striking white pinstripes.",
+                images: ["https://images.unsplash.com/photo-1599598425947-33002629ddbc?auto=format&fit=crop&w=600&q=80"],
+                reviews: []
+            },
+            {
+                id: 14, name: "Ceramic Minimalist Pot", scientificName: "Accessory", currentPrice: 450.00, originalPrice: 550.00, bestSeller: true, views: 900, orders: 300, stock: 106, dateAdded: '2026-06-15',
+                category: "Pots", family: "Other", size: "Up to 50 cm", difficulty: "Easy", light: "Plenty of light to shade",
+                tags: ["Pots"],
+                description: "A beautiful matte ceramic pot with drainage hole and matching saucer. Perfect for modern interiors.",
+                images: ["https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=600&q=80"],
+                reviews: []
+            },
+            {
+                id: 15, name: "Organic Liquid Fertilizer", scientificName: "Nutrients", currentPrice: 299.00, originalPrice: 350.00, bestSeller: false, views: 400, orders: 95, stock: 50, dateAdded: '2026-08-05',
+                category: "Fertilizers", family: "Other", size: "Cutting", difficulty: "Easy", light: "Plenty of light to shade",
+                tags: ["Fertilizers"],
+                description: "All-natural seaweed extract fertilizer. Promotes lush foliage and strong root growth for all indoor plants.",
+                images: ["https://images.unsplash.com/photo-1622383563227-04401ab4e5ea?auto=format&fit=crop&w=600&q=80"],
+                reviews: []
+            },
+            {
+                id: 16, name: "Premium Watering Can", scientificName: "Tool", currentPrice: 899.00, originalPrice: 1200.00, bestSeller: false, views: 250, orders: 20, stock: 0, dateAdded: '2026-07-01',
+                category: "Accessories", family: "Other", size: "Up to 50 cm", difficulty: "Easy", light: "Plenty of light to shade",
+                tags: ["Accessories"],
+                description: "Stainless steel watering can with a long spout for precise watering without spilling.",
+                images: ["https://images.unsplash.com/photo-1416879598553-33bc0fbaaf73?auto=format&fit=crop&w=600&q=80"],
+                reviews: []
+            },
+            {
+                id: 17, name: "Mixed Herb Seeds Bundle", scientificName: "Seeds", currentPrice: 199.00, originalPrice: 250.00, bestSeller: false, views: 150, orders: 45, stock: 200, dateAdded: '2026-09-15',
+                category: "Seeds", family: "Other", size: "Cutting", difficulty: "Intermediate", light: "Plenty of light to half shade",
+                tags: ["Seeds"],
+                description: "A bundle of Basil, Mint, and Coriander seeds ready to be sown in your kitchen garden.",
+                images: ["https://images.unsplash.com/photo-1588667527653-cb30b4ec74f4?auto=format&fit=crop&w=600&q=80"],
+                reviews: []
+            }
+        ];
+
+        const filterCategories = [
+            { id: 'availability', name: 'Availability', options: ['Available', 'Out of Stock'] },
+            { id: 'family', name: 'Plant Family', options: ['Monstera', 'Philodendron', 'Ficus', 'Syngonium', 'Other'] },
+            { id: 'size', name: 'Size', options: ['Cutting', 'Up to 50 cm', '50 cm to 100 cm', 'Over 100 cm'] },
+            { id: 'difficulty', name: 'Difficulty', options: ['Easy', 'Intermediate', 'Experienced plant parent'] },
+            { id: 'light', name: 'Light', options: ['Plenty of light to shade', 'Plenty of light to half shade', 'Plenty of light but no direct sunlight', 'Half shade to shade'] }
+        ];
+
+        let cart = [];
+        let activeCategoryView = null; 
+
+        function initApp() {
+            loadSavedReviews();
+            renderBestSellers();
+            buildSidebarFilters();
+            setupPriceSlider();
+        }
+
+        function loadSavedReviews() {
+            try {
+                const saved = JSON.parse(localStorage.getItem('candb_reviews') || '{}');
+                products.forEach(p => { if (saved[p.id]) p.reviews = saved[p.id]; });
+            } catch(e) {}
+        }
+
+        function saveReviewsLocally() {
+            const toSave = {};
+            products.forEach(p => { if(p.reviews && p.reviews.length > 0) toSave[p.id] = p.reviews; });
+            localStorage.setItem('candb_reviews', JSON.stringify(toSave));
+        }
+
+        function navigate(viewName, subCategory = null) {
+            ['home', 'shop-hub', 'shop', 'product', 'blog'].forEach(v => document.getElementById(`view-${v}`).classList.add('hidden'));
+
+            if (viewName === 'shop') {
+                document.getElementById('view-shop').classList.remove('hidden');
+                if (subCategory) {
+                    activeCategoryView = subCategory;
+                    document.getElementById('shop-page-title').innerText = `Shop ${subCategory}`;
+                    clearFilters(false); 
+                    applyFilters();      
+                }
+            } else {
+                activeCategoryView = null;
+                document.getElementById(`view-${viewName}`).classList.remove('hidden');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        function getRatingHtml(reviews) {
+            if (!reviews || reviews.length === 0) return `<span class="text-xs font-semibold bg-gray-100 px-2 py-1 rounded text-gray-500">No reviews yet</span>`;
+            const avg = reviews.reduce((sum, rev) => sum + rev.rating, 0) / reviews.length;
+            let stars = '';
+            for(let i=1; i<=5; i++) stars += `<i class="fa-solid fa-star ${i <= Math.round(avg) ? 'text-yellow-400' : 'text-gray-300'} text-xs"></i>`;
+            return `<div class="flex items-center gap-1">${stars} <span class="text-xs text-gray-500 ml-1">(${avg.toFixed(1)})</span></div>`;
+        }
+
+        function generateCardHTML(product) {
+            let imagesHTML = '';
+            product.images.forEach((img, index) => {
+                let opacityClass = index === 0 ? 'opacity-100' : 'opacity-0';
+                imagesHTML += `<img src="${img}" alt="${product.name}" class="slider-img absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${opacityClass}" onerror="this.src='https://placehold.co/400x500/f0fdf4/15803d?text=${encodeURIComponent(product.name)}'">`;
+            });
+            
+            const stockBadge = product.stock > 0 
+                ? (product.bestSeller ? '<div class="absolute top-4 left-4 bg-yellow-400 text-yellow-900 text-[10px] font-bold px-3 py-1 rounded-full shadow-md z-10 uppercase tracking-wider">Best Seller</div>' : '')
+                : '<div class="absolute top-4 left-4 bg-red-100 text-red-700 text-[10px] font-bold px-3 py-1 rounded-full shadow-md z-10 uppercase tracking-wider">Out of Stock</div>';
+                
+            const btnState = product.stock > 0 
+                ? `<button onclick="event.stopPropagation(); addToCart(${product.id});" class="bg-brand-green-900 hover:bg-brand-green-700 text-white w-10 h-10 rounded-full transition-colors focus:outline-none shadow-md flex items-center justify-center shrink-0"><i class="fa-solid fa-plus text-sm"></i></button>`
+                : `<button disabled class="bg-gray-300 text-gray-500 w-10 h-10 rounded-full flex items-center justify-center shrink-0 cursor-not-allowed"><i class="fa-solid fa-ban text-sm"></i></button>`;
+
+            return `
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-gray-100 group flex flex-col h-full cursor-pointer relative" onclick="openProduct(${product.id})">
+                    <div class="relative w-full aspect-[4/5] overflow-hidden bg-gray-50 image-slider-container" data-slider-index="0" data-img-count="${product.images.length}">
+                        ${imagesHTML}
+                        ${stockBadge}
+                    </div>
+                    <div class="p-5 flex flex-col flex-1">
+                        <span class="text-[10px] font-bold text-brand-green-700 uppercase tracking-wider mb-1">${product.category}</span>
+                        <h3 class="font-serif text-lg font-bold text-earth-900 mb-1 leading-tight group-hover:text-brand-green-700 transition-colors">${product.name}</h3>
+                        ${getRatingHtml(product.reviews)}
+                        <p class="text-sm text-gray-600 mt-3 mb-4 flex-1 line-clamp-2">${product.description}</p>
+                        <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
+                            <div class="flex flex-col">
+                                <span class="text-lg font-bold ${product.stock > 0 ? 'text-brand-green-700' : 'text-gray-400'}">₹${product.currentPrice.toFixed(2)}</span>
+                                <span class="text-xs text-gray-400 line-through">₹${product.originalPrice.toFixed(2)}</span>
+                            </div>
+                            ${btnState}
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        function renderBestSellers() {
+            document.getElementById('bestsellers-grid').innerHTML = products.filter(p => p.bestSeller && p.stock > 0 && p.category === "Plants").slice(0, 4).map(generateCardHTML).join('');
+        }
+
+        function buildSidebarFilters() {
+            const container = document.getElementById('filter-container');
+            container.innerHTML = '';
+            
+            filterCategories.forEach(cat => {
+                let checkboxes = cat.options.map(opt => `
+                    <label class="flex items-center gap-3 cursor-pointer group">
+                        <input type="checkbox" value="${opt}" data-group="${cat.id}" class="filter-checkbox" onchange="applyFilters()">
+                        <span class="text-sm text-gray-600 group-hover:text-brand-green-700 transition-colors">${opt}</span>
+                    </label>`).join('');
+                container.innerHTML += `<div class="border-b border-gray-100 pb-5 mb-5 last:border-0"><h4 class="text-sm font-bold text-earth-900 uppercase tracking-wider mb-3">${cat.name}</h4><div class="space-y-2 pl-1">${checkboxes}</div></div>`;
+            });
+        }
+
+        const priceMinInput = document.getElementById('price-min');
+        const priceMaxInput = document.getElementById('price-max');
+        const priceMinDisplay = document.getElementById('price-min-display');
+        const priceMaxDisplay = document.getElementById('price-max-display');
+        const sliderProgress = document.getElementById('slider-progress');
+
+        function setupPriceSlider() {
+            updatePriceSlider();
+        }
+
+        function updatePriceSlider() {
+            let minVal = parseInt(priceMinInput.value);
+            let maxVal = parseInt(priceMaxInput.value);
+            
+            if (minVal > maxVal - 50) {
+                if (event.target.id === 'price-min') priceMinInput.value = maxVal - 50;
+                else priceMaxInput.value = minVal + 50;
+                minVal = parseInt(priceMinInput.value);
+                maxVal = parseInt(priceMaxInput.value);
+            }
+            
+            priceMinDisplay.innerText = minVal;
+            priceMaxDisplay.innerText = maxVal;
+            
+            const maxRange = priceMinInput.max;
+            sliderProgress.style.left = (minVal / maxRange) * 100 + "%";
+            sliderProgress.style.right = 100 - (maxVal / maxRange) * 100 + "%";
+            
+            applyFilters();
+        }
+
+        function clearFilters(triggerApply = true) {
+            document.querySelectorAll('.filter-checkbox').forEach(cb => cb.checked = false);
+            document.getElementById('sort-select').value = 'relevant';
+            priceMinInput.value = 0; priceMaxInput.value = 5000;
+            
+            priceMinDisplay.innerText = 0;
+            priceMaxDisplay.innerText = 5000;
+            sliderProgress.style.left = "0%";
+            sliderProgress.style.right = "0%";
+            
+            if(triggerApply) applyFilters();
+        }
+
+        function getCheckedByGroup(groupId) {
+            return Array.from(document.querySelectorAll(`.filter-checkbox[data-group="${groupId}"]:checked`)).map(cb => cb.value);
+        }
+
+        function applyFilters() {
+            let filtered = products;
+            if (activeCategoryView) {
+                filtered = products.filter(p => p.category === activeCategoryView);
+            }
+
+            const minPrice = parseInt(priceMinInput.value);
+            const maxPrice = parseInt(priceMaxInput.value);
+            filtered = filtered.filter(p => p.currentPrice >= minPrice && p.currentPrice <= maxPrice);
+
+            const availabilities = getCheckedByGroup('availability');
+            if(availabilities.length > 0) {
+                filtered = filtered.filter(p => {
+                    const isAvailable = p.stock > 0;
+                    return (availabilities.includes('Available') && isAvailable) || (availabilities.includes('Out of Stock') && !isAvailable);
+                });
+            }
+
+            const families = getCheckedByGroup('family');
+            if(families.length > 0) filtered = filtered.filter(p => families.includes(p.family) || (families.includes('Other') && !['Monstera', 'Philodendron', 'Ficus', 'Syngonium'].includes(p.family)));
+
+            const sizes = getCheckedByGroup('size');
+            if(sizes.length > 0) filtered = filtered.filter(p => sizes.includes(p.size));
+
+            const difficulties = getCheckedByGroup('difficulty');
+            if(difficulties.length > 0) filtered = filtered.filter(p => difficulties.includes(p.difficulty));
+
+            const lights = getCheckedByGroup('light');
+            if(lights.length > 0) filtered = filtered.filter(p => lights.includes(p.light));
+
+            const sortType = document.getElementById('sort-select').value;
+            switch(sortType) {
+                case 'most-viewed': filtered.sort((a, b) => b.views - a.views); break;
+                case 'bestseller': filtered.sort((a, b) => (b.bestSeller === a.bestSeller) ? 0 : b.bestSeller ? -1 : 1); break;
+                case 'price-low-high': filtered.sort((a, b) => a.currentPrice - b.currentPrice); break;
+                case 'price-high-low': filtered.sort((a, b) => b.currentPrice - a.currentPrice); break;
+                case 'new': filtered.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded)); break;
+                case 'relevant': default: filtered.sort((a, b) => a.id - b.id); break;
+            }
+
+            const grid = document.getElementById('shop-grid');
+            const emptyState = document.getElementById('empty-state');
+            document.getElementById('result-count').innerText = filtered.length;
+            
+            if(filtered.length === 0) { grid.innerHTML = ''; emptyState.classList.remove('hidden'); } 
+            else { emptyState.classList.add('hidden'); grid.innerHTML = filtered.map(generateCardHTML).join(''); }
+            
+            setTimeout(startImageSliders, 100);
+        }
+
+        function startImageSliders() {
+            document.querySelectorAll('.image-slider-container').forEach(container => {
+                const images = container.querySelectorAll('.slider-img');
+                const imgCount = parseInt(container.getAttribute('data-img-count'));
+                
+                if (imgCount <= 1 || container.dataset.sliding === "true") return;
+                
+                container.dataset.sliding = "true"; 
+                setInterval(() => {
+                    if(container.offsetParent === null) return; 
+                    let currentIndex = parseInt(container.getAttribute('data-slider-index'));
+                    let nextIndex = (currentIndex + 1) % imgCount; 
+                    
+                    images[currentIndex].classList.remove('opacity-100'); images[currentIndex].classList.add('opacity-0');
+                    images[nextIndex].classList.remove('opacity-0'); images[nextIndex].classList.add('opacity-100');
+                    
+                    container.setAttribute('data-slider-index', nextIndex);
+                }, 4000); 
+            });
+        }
+
+        function submitReview(event, productId) {
+            event.preventDefault();
+            const name = document.getElementById('rev-name').value;
+            const rating = parseInt(document.getElementById('rev-rating').value);
+            const comment = document.getElementById('rev-comment').value;
+
+            const product = products.find(p => p.id === productId);
+            if(product) {
+                product.reviews.push({ user: name, rating: rating, comment: comment });
+                saveReviewsLocally();
+                showToast("Review submitted successfully!");
+                openProduct(productId); 
+            }
+        }
+
+        function openProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if(!product) return;
+            const container = document.getElementById('product-detail-container');
+            
+            let reviewsHtml = product.reviews.length === 0 ? `<p class="text-gray-500 italic">No reviews yet. Be the first to review!</p>` : product.reviews.map(rev => `
+                <div class="border-b border-gray-100 py-4">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="font-bold text-earth-900 text-sm">${rev.user}</span>
+                        <div class="flex text-yellow-400 text-[10px]">${'<i class="fa-solid fa-star"></i>'.repeat(rev.rating)}${'<i class="fa-regular fa-star"></i>'.repeat(5 - rev.rating)}</div>
+                    </div>
+                    <p class="text-gray-600 text-sm">${rev.comment}</p>
+                </div>`).join('');
+
+            let avgRating = product.reviews.length > 0 ? (product.reviews.reduce((sum, rev) => sum + rev.rating, 0) / product.reviews.length).toFixed(1) : 0;
+            
+            const inStock = product.stock > 0;
+            const stockDisplay = inStock 
+                ? `<span class="bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full"><i class="fa-solid fa-check mr-1"></i> In Stock (${product.stock} left)</span>`
+                : `<span class="bg-red-100 text-red-800 text-xs font-bold px-3 py-1 rounded-full"><i class="fa-solid fa-xmark mr-1"></i> Out of Stock</span>`;
+            
+            const btnState = inStock
+                ? `<button onclick="addToCart(${product.id})" class="w-full bg-brand-green-700 hover:bg-brand-green-800 text-white font-bold py-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-3 text-lg"><i class="fa-solid fa-cart-shopping"></i> Add to Cart</button>`
+                : `<button disabled class="w-full bg-gray-300 text-gray-500 font-bold py-4 rounded-xl flex items-center justify-center gap-3 text-lg cursor-not-allowed"><i class="fa-solid fa-ban"></i> Currently Unavailable</button>`;
+
+            container.innerHTML = `
+                <button onclick="navigate('shop', '${product.category}')" class="mb-6 text-brand-green-700 hover:underline flex items-center gap-2 font-medium"><i class="fa-solid fa-arrow-left"></i> Back to ${product.category}</button>
+                <div class="flex flex-col md:flex-row gap-12 bg-white rounded-3xl p-6 md:p-10 shadow-lg border border-gray-100">
+                    <div class="w-full md:w-1/2">
+                        <div class="aspect-[4/5] rounded-2xl overflow-hidden bg-gray-50">
+                            <img src="${product.images[0]}" alt="${product.name}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex gap-2 mt-4 overflow-x-auto pb-2">
+                            ${product.images.map(img => `<img src="${img}" class="w-20 h-20 object-cover rounded-lg border border-gray-200 cursor-pointer hover:border-brand-green-500" onclick="this.parentElement.previousElementSibling.firstElementChild.src=this.src" onerror="this.src='https://placehold.co/100x100/f0fdf4/15803d?text=CB'">`).join('')}
+                        </div>
+                    </div>
+                    <div class="w-full md:w-1/2 flex flex-col justify-center">
+                        <div class="flex items-center gap-2 mb-4 flex-wrap">
+                            <span class="bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1 rounded-full uppercase">${product.category}</span>
+                            ${stockDisplay}
+                            ${product.bestSeller ? '<span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-3 py-1 rounded-full w-max">BEST SELLER</span>' : ''}
+                        </div>
+                        <h1 class="text-3xl md:text-5xl font-serif font-bold text-earth-900 mb-2 leading-tight">${product.name}</h1>
+                        <p class="text-lg text-gray-500 italic mb-6">( ${product.scientificName} )</p>
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="flex text-yellow-400 text-lg">${avgRating > 0 ? '<i class="fa-solid fa-star"></i>'.repeat(Math.round(avgRating)) : '<span class="text-sm font-semibold bg-gray-100 px-2 py-1 rounded text-gray-500">No reviews yet</span>'}</div>
+                            <span class="text-gray-600 font-medium">${avgRating > 0 ? avgRating + ' out of 5' : ''} ${avgRating > 0 ? `(${product.reviews.length} reviews)` : ''}</span>
+                        </div>
+                        <div class="flex items-end gap-4 mb-8">
+                            <span class="text-4xl font-bold ${inStock ? 'text-brand-green-700' : 'text-gray-400'}">₹${product.currentPrice.toFixed(2)}</span>
+                            <span class="text-xl text-gray-400 line-through mb-1">₹${product.originalPrice.toFixed(2)}</span>
+                        </div>
+                        <p class="text-gray-700 text-lg leading-relaxed mb-8">${product.description}</p>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-8 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                            <div><span class="block text-xs text-gray-400 uppercase font-bold">Family</span><span class="text-sm font-medium text-gray-800">${product.family}</span></div>
+                            <div><span class="block text-xs text-gray-400 uppercase font-bold">Size</span><span class="text-sm font-medium text-gray-800">${product.size}</span></div>
+                            <div><span class="block text-xs text-gray-400 uppercase font-bold">Difficulty</span><span class="text-sm font-medium text-gray-800">${product.difficulty}</span></div>
+                            <div><span class="block text-xs text-gray-400 uppercase font-bold">Light</span><span class="text-sm font-medium text-gray-800">${product.light}</span></div>
+                        </div>
+
+                        ${btnState}
+                    </div>
+                </div>
+
+                <div class="mt-12 bg-gray-50 rounded-3xl p-8 border border-gray-100">
+                    <h3 class="text-2xl font-serif font-bold text-earth-900 mb-8 border-b pb-4">Customer Reviews</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 h-min">
+                            <h4 class="font-bold text-lg mb-4 text-brand-green-900">Write a Review</h4>
+                            <p class="text-xs text-gray-500 mb-4">(Note: In Phase 2, sign-in will be required to leave a review)</p>
+                            <form onsubmit="submitReview(event, ${product.id})" class="space-y-4">
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Your Name</label><input type="text" id="rev-name" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-brand-green-500"></div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+                                    <select id="rev-rating" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-brand-green-500 bg-white">
+                                        <option value="5">5 Stars - Excellent</option><option value="4">4 Stars - Very Good</option><option value="3">3 Stars - Average</option><option value="2">2 Stars - Poor</option><option value="1">1 Star - Terrible</option>
+                                    </select>
+                                </div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Review</label><textarea id="rev-comment" required rows="3" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-brand-green-500"></textarea></div>
+                                <button type="submit" class="bg-brand-green-700 text-white font-bold py-2 px-6 rounded-lg hover:bg-brand-green-800 transition">Submit Review</button>
+                            </form>
+                        </div>
+                        <div class="space-y-2 h-max max-h-[450px] overflow-y-auto pr-4">${reviewsHtml}</div>
+                    </div>
+                </div>`;
+            navigate('product');
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product || product.stock <= 0) return;
+            const existingItem = cart.find(item => item.id === productId);
+            if (existingItem) {
+                if(existingItem.quantity < product.stock) existingItem.quantity += 1;
+                else return showToast("Cannot add more than available stock.");
+            } else cart.push({ id: product.id, name: product.name, price: product.currentPrice, image: product.images[0], quantity: 1, stock: product.stock });
+            updateCartUI(); showToast(`<i class="fa-solid fa-check-circle text-green-400"></i> Added <strong>${product.name}</strong> to cart!`);
+        }
+
+        function updateCartUI() {
+            const cartItemsContainer = document.getElementById('cart-items'), cartTotalElement = document.getElementById('cart-total'), cartBadges = [document.getElementById('cart-badge'), document.getElementById('mobile-cart-badge')];
+            let totalItems = 0; let totalPrice = 0; cartItemsContainer.innerHTML = ''; 
+            
+            if (cart.length === 0) cartItemsContainer.innerHTML = '<div class="text-center text-gray-500 mt-10">Your cart is empty.</div>';
+            else {
+                cart.forEach((item, index) => {
+                    totalItems += item.quantity; totalPrice += (item.price * item.quantity);
+                    cartItemsContainer.innerHTML += `
+                        <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md aspect-square" onerror="this.src='https://placehold.co/100/f0fdf4/15803d?text=Plant'">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-earth-900 text-sm leading-tight mb-1">${item.name}</h4>
+                                <p class="text-brand-green-700 font-semibold text-sm">₹${item.price.toFixed(2)}</p>
+                            </div>
+                            <div class="flex items-center gap-2 bg-white rounded-lg p-1 border shadow-sm">
+                                <button onclick="updateQuantity(${index}, -1)" class="w-6 h-6 flex items-center justify-center text-gray-600 hover:bg-gray-200 rounded text-sm">-</button>
+                                <span class="text-sm font-medium w-4 text-center">${item.quantity}</span>
+                                <button onclick="updateQuantity(${index}, 1)" class="w-6 h-6 flex items-center justify-center text-gray-600 hover:bg-gray-200 rounded text-sm">+</button>
+                            </div>
+                        </div>`;
+                });
+            }
+            cartBadges.forEach(badge => badge.textContent = totalItems); cartTotalElement.textContent = `₹${totalPrice.toFixed(2)}`;
+        }
+
+        function updateQuantity(index, change) {
+            if (cart[index]) { 
+                const newQ = cart[index].quantity + change;
+                if(newQ > cart[index].stock) return showToast("Limit reached (Max Stock).");
+                cart[index].quantity = newQ;
+                if (cart[index].quantity <= 0) cart.splice(index, 1); 
+                updateCartUI(); 
+            }
+        }
+
+        function toggleCart() {
+            const drawer = document.getElementById('cart-drawer'), overlay = document.getElementById('cart-overlay');
+            if (drawer.classList.contains('translate-x-full')) {
+                overlay.classList.remove('hidden'); setTimeout(() => { overlay.classList.remove('opacity-0'); drawer.classList.remove('translate-x-full'); }, 10); document.body.style.overflow = 'hidden'; 
+            } else {
+                overlay.classList.add('opacity-0'); drawer.classList.add('translate-x-full'); setTimeout(() => { overlay.classList.add('hidden'); }, 300); document.body.style.overflow = '';
+            }
+        }
+
+        function showToast(messageHtml) {
+            const container = document.getElementById('toast-container'), toast = document.createElement('div');
+            toast.className = 'toast'; toast.innerHTML = messageHtml; container.appendChild(toast);
+            setTimeout(() => { toast.classList.add('show'); }, 10); setTimeout(() => { toast.classList.remove('show'); setTimeout(() => { toast.remove(); }, 300); }, 3000);
+        }
+        
+        function checkout() {
+            if (cart.length === 0) return showToast("Your cart is empty!");
+            let message = "Hello C & B Potted Plants! 🌱\n\nI would like to place an order:\n\n*Order Summary:*\n", total = 0;
+            cart.forEach(item => { message += `- ${item.name} (x${item.quantity}) - ₹${(item.price * item.quantity).toFixed(2)}\n`; total += (item.price * item.quantity); });
+            message += `\n*Total Amount: ₹${total.toFixed(2)}*\n\nPlease let me know the payment details and delivery timeframe. Thank you!`;
+            window.open(`https://wa.me/919342370441?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => { document.getElementById('mobile-menu').classList.toggle('hidden'); });
+        window.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>

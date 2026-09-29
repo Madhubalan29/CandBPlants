@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+.env*.local
+.vercel
+
+# Original camera photos (3–5 MB each). `npm run images` builds the web versions in public/images.
+/*.jpg
+/*.JPG
+/*.jpeg
